@@ -1,5 +1,5 @@
 import pytest
-import functions
+from functions import *
 
 def test_numbers():
-    assert functions.numbers(6, 3) == 2
+    assert numbers(6, 3) == 2
