@@ -9,6 +9,6 @@ def test_openFile(file):
 def test_numbers(value1, value2, sum):
     assert numbers(value1, value2) == sum
 
-@pytest.mark.parametrize("x1,y1,x2,y2,sum", [(1, 1, 4, 5, 5), ("1", "1", "4", "5", 5), (1.1, 1.1, 4.1, 5.1, 5), (-1, -1, -4, -5, 5)])
+@pytest.mark.parametrize("x1,y1,x2,y2,sum", [(1, 1, 4, 5, 5), ("1", "1", "4", "5", 5), (1.1, 1.1, 4.1, 5.1, 5), (-1, -1, -4, -5, 5), (0, 0, 0, 0, 0)])
 def test_dist(x1, y1, x2, y2, sum):
     assert dist(x1, y1, x2, y2) == sum
