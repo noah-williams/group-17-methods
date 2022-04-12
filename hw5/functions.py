@@ -10,10 +10,8 @@ def openFile(filename):
 ## takes two numbers and returns
 ## the result of a division
 def numbers(num1, num2):
-    if num2 != 0:
-        return num1 / num2
-    else:
-        print("Cannot divide by Zero.")
+    return num1 / num2
+    
 ## takes in two points
 ## finds the distance between the points
 def dist(x1, y1, x2, y2):
