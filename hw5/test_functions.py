@@ -12,3 +12,7 @@ def test_numbers(value1, value2, sum):
 @pytest.mark.parametrize("x1,y1,x2,y2,sum", [(1, 1, 4, 5, 5), ("1", "1", "4", "5", 5), (1.1, 1.1, 4.1, 5.1, 5), (-1, -1, -4, -5, 5), (0, 0, 0, 0, 0)])
 def test_dist(x1, y1, x2, y2, sum):
     assert dist(x1, y1, x2, y2) == sum
+
+@pytest.mark.parametrize("palindrome",["Rotator", "rotator", "palindrome", "nurses run", "123454321", "tacocat"])
+def test_isPalindrome(palindrome):
+    assert isPalindrome == True
