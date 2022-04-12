@@ -15,4 +15,4 @@ def test_dist(x1, y1, x2, y2, sum):
 
 @pytest.mark.parametrize("palindrome",["Rotator", "rotator", "palindrome", "nurses run", "123454321", "tacocat"])
 def test_isPalindrome(palindrome):
-    assert isPalindrome == True
+    assert isPalindrome(palindrome) == True
