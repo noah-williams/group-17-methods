@@ -34,6 +34,6 @@ def test_divide(MonkeyPatch, capsys):
     assert captured_stdout.strip() == "Your numbers divided is:2"
 '''
 
-@pytest.mark.parametrize("num, square",[(25, 5), (6.25, 2.5), ("25", "5")])
+@pytest.mark.parametrize("num, square",[(-25, 5), (25, 5), (6.25, 2.5), ("25", "5")])
 def test_sq(num, square):
     assert sq(num) == square
