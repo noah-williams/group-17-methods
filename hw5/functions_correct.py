@@ -49,11 +49,14 @@ def divide():
     ## / always outputs a float
     num1 = int(input("Enter a number: "))
     num2 = int(input("Enter another number: "))
-
-    div = num1 / num2
-
-    print("Your numbers divided is:", div)
-
+    if num2 != 0:
+        div = num1 / num2
+        print("Your numbers divided is:", div)
+    else:
+        print("Error: Divide by Zero.")
+        
+        
+        
 ## returns the squareroot of a particular number
 def sq(num):
     ## No checking for negative numbers...negative will throw an error
@@ -64,8 +67,8 @@ def sq(num):
 ## names should be strings
 def greetUser(first, middle, last):
     print("Hello!")
-    ## This will be spaced weird I think
-    print("Welcome to the program", first, middle, last)
+    ## This will be spaced weird I think     Perhaps fixed? -js
+    print("Welcome to the program, ", first, " ", middle, " ", last, ". \n")
     print("Glad to have you!")
 
 ## takes in a Python list
