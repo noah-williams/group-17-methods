@@ -10,5 +10,5 @@ def test_numbers(value1, value2, sum):
     assert numbers(value1, value2) == sum
 
 @pytest.mark.parametrize("x1,y1,x2,y2,sum", [(1, 1, 4, 5, 5), ("1", "1", "4", "5", 5)])
-def test_numbers(x1, y1, x2, y2, sum):
-    assert numbers(x1, y1, x2, y2) == sum
+def test_dist(x1, y1, x2, y2, sum):
+    assert dist(x1, y1, x2, y2) == sum
