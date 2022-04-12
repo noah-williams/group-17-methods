@@ -16,3 +16,24 @@ def test_dist(x1, y1, x2, y2, sum):
 @pytest.mark.parametrize("palindrome",["Rotator", "rotator", "palindrome", "nurses run", "123454321", "tacocat"])
 def test_isPalindrome(palindrome):
     assert isPalindrome(palindrome) == True
+
+'''
+def geninputs():
+    inputs = ["6", "3"]
+
+    for item in inputs:
+        yield item
+
+GEN = geninputs()
+
+def test_divide(MonkeyPatch, capsys):
+    MonkeyPatch.setattr('builtins.input', lambda _: next(GEN))
+    divide()
+    captured_stdout, captured_stderr = capsys.redouterr()
+
+    assert captured_stdout.strip() == "Your numbers divided is:2"
+'''
+
+@pytest.mark.parametrize("num, square",[(25, 5), (6.25, 2.5), ("25", "5")])
+def test_sq(num, square):
+    assert sq(num) == square
