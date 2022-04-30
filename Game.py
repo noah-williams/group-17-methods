@@ -1,14 +1,23 @@
 def view():
-    print("1: Go back")
+    gameList = ["The Elder Scrolls V: Skyrim – Special Edition", "Elden Ring", "Cyberpunk 2077", "DEATHLOOP", "LEGO Star Wars: The Skywalker Saga", "Marvel’s Avengers", "Monster Hunter: World", "Stardew Valley", "Madden NFL 22", "Battlefield 2042"]
+    print("1. Go back")
+    countVar = 2
+    for x in gameList:
+        print(countVar, ". ",  x, sep = '')
+        countVar += 1
     game_input = int(input("Please select an option: "))
 
-    while 1 <= game_input <= 100:
+    while 1 <= game_input <= len(gameList)+1:
 
-        if game_input == 1:
+        if game_input == 0:
             return
+        
+        else:
+            print("Full info for " + gameList[game_input-2])
 
-        # todo: Show list of games that you can select
-        # Implementation Idea: Use Select Name from Games and add those to a list. Then use a for loop to iterate through the list and generate a menu which allows the user to select a game by giving the index number which then does a Select * From Games Where Name = list[i] 
-
-        print("1: Go back")
+        print("0. Go back")
+        countVar = 2
+        for x in gameList:
+            print(countVar, ". ", x, sep = '')
+            countVar += 1
         game_input = int(input("Please select an option: "))
