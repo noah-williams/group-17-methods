@@ -78,8 +78,8 @@ def main():
     while 1 <= user_input <= 5:
 
             # if user presses 1, have inputs for username and password, then check if they exist in database
-            if user_input == 1:
-                Game.view()
+        if user_input == 1:
+            Game.view()
 
         if user_input == 2:
             Cart.view()
