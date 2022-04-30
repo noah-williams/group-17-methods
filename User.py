@@ -13,6 +13,9 @@ class User:
         #something something database call something something
         print('test')
 
+    def output_name():
+        return User.FirstName
+
 def view():
     print("1: Go back")
     print("2: View orders")
