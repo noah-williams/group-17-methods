@@ -18,13 +18,13 @@ def main():
             cur = conn.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
             print('Encountered error', error)
-            
-    print("1: Login")
-    print("2: Create account")
-    print("3: Quit program")
-    user_input = int(input("Please select an option 1-3: "))
 
-    while 1 <= user_input <= 3:
+    while 1:
+        
+        print("1: Login")
+        print("2: Create account")
+        print("3: Quit program")
+        user_input = int(input("Please select an option 1-3: "))
 
         # if user presses 1, have inputs for username and password, then check if they exist in database
         if user_input == 1:
@@ -46,10 +46,7 @@ def main():
         if user_input == 3:
             quit()
 
-        print("1: Login")
-        print("2: Create account")
-        print("3: Quit program")
-        user_input = int(input("Please select an option 1-3: "))
+        
 
     # Once logged in, run store functionality
 
