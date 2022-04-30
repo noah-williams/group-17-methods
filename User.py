@@ -1,5 +1,20 @@
 import Order
 
+class User:
+    def __init__(user, FirstName, LastName, Username, Password, ShippingInfo, PaymentInfo):
+        user.FirstName = FirstName
+        user.Lastname = LastName
+        user.Username = Username
+        user.Password = Password
+        user.ShippingInfo = ShippingInfo
+        user.PaymentInfo= PaymentInfo
+
+    def Login(Username, Password):
+        #something something database call something something
+        print('test')
+
+    def output_name():
+        return User.FirstName
 
 def view():
     print("1: Go back")
