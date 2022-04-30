@@ -52,14 +52,14 @@ def main():
 
         # if user presses 2, have inputs to create a new user, then send them to the store
         if user_input == 2:
-            first = input("What is your first name?")
-            last = input("What is your last name?")
-            new_username = input("What do you want your username to be?")
-            password = input("What do you want your password to be?")
-            ShippingAddy = input("What is your shipping address?")
-            payment = input("What is your card number?")
-            new_user = User(first, last, new_username, password, ShippingAddy, payment)
-            print(new_user.first)
+            first = input("What is your first name? ")
+            last = input("What is your last name? ")
+            new_username = input("What do you want your username to be? ")
+            password = input("What do you want your password to be? ")
+            ShippingAddy = input("What is your shipping address? ")
+            payment = input("What is your card number? ")
+            new_user = User.User(first, last, new_username, password, ShippingAddy, payment)
+            print(new_user.FirstName)
             break
 
         if user_input == 3:

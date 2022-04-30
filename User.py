@@ -9,12 +9,12 @@ class User:
         user.ShippingInfo = ShippingInfo
         user.PaymentInfo= PaymentInfo
 
-    def Login(Username, Password):
+    def Login(user, Username, Password):
         #something something database call something something
         print('test')
 
-    def output_name():
-        return User.FirstName
+    def output_name(user):
+        return user.FirstName
 
 def view():
     print("1: Go back")
