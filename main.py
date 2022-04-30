@@ -55,8 +55,30 @@ def main():
     user_input = int(input("Please select an option 1-5: "))
     while 1 <= user_input <= 5:
 
-        if user_input == 1:
-            Game.view()
+            # if user presses 1, have inputs for username and password, then check if they exist in database
+            if user_input == 1:
+                Game.view()
+                # todo
+                loginCheck = False
+                userName = input("Username: ")
+                passWord = input("Password: ")
+                userNameList = ["jag1065", "ch3083", "jrs1381", "nmw178"]
+                passWordList = ["Pa55w0rd", "drowssaP", "WordPass", "Password"]
+                for x in userNameList:
+                    if x == userName:
+                        listIndex = userNameList.index(x)
+                        if passWordList[listIndex] == passWord:
+                            loginCheck = True
+                            print("Login successful.")
+                            break
+                        else:
+                            print("Password incorrect. Please try again.")
+                            break
+                    else:
+                        print("Username not recognized. Please try again or create an account.")
+                        break
+                if loginCheck == True:
+                    break
 
         if user_input == 2:
             Cart.view()
