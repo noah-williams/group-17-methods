@@ -17,8 +17,8 @@ def main():
                 password="<password goes here>")
             cur = conn.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
+            print('Encountered error', error)
             
-    print(error)
     # label .begin
     print("1: Login")
     print("2: Create account")
