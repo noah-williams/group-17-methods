@@ -29,7 +29,26 @@ def main():
         # if user presses 1, have inputs for username and password, then check if they exist in database
         if user_input == 1:
             # todo
-            break
+            loginCheck = False
+            userName = input("Username: ")
+            passWord = input("Password: ")
+            userNameList = ["jag1065", "ch3083", "jrs1381", "nmw178"]
+            passWordList = ["Pa55w0rd", "drowssaP", "WordPass", "Password"]
+            for x in userNameList:
+                if x == userName:
+                    listIndex = userNameList.index(x)
+                    if passWordList[listIndex] == passWord:
+                        loginCheck = True
+                        print("Login successful.")
+                        break
+                    else:
+                        print("Password incorrect. Please try again.")
+                        break
+                else:
+                    print("Username not recognized. Please try again or create an account.")
+                    break
+            if loginCheck == True:
+                break
 
         # if user presses 2, have inputs to create a new user, then send them to the store
         if user_input == 2:
@@ -61,27 +80,6 @@ def main():
             # if user presses 1, have inputs for username and password, then check if they exist in database
             if user_input == 1:
                 Game.view()
-                # todo
-                loginCheck = False
-                userName = input("Username: ")
-                passWord = input("Password: ")
-                userNameList = ["jag1065", "ch3083", "jrs1381", "nmw178"]
-                passWordList = ["Pa55w0rd", "drowssaP", "WordPass", "Password"]
-                for x in userNameList:
-                    if x == userName:
-                        listIndex = userNameList.index(x)
-                        if passWordList[listIndex] == passWord:
-                            loginCheck = True
-                            print("Login successful.")
-                            break
-                        else:
-                            print("Password incorrect. Please try again.")
-                            break
-                    else:
-                        print("Username not recognized. Please try again or create an account.")
-                        break
-                if loginCheck == True:
-                    break
 
         if user_input == 2:
             Cart.view()
