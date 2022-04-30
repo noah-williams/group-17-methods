@@ -19,7 +19,6 @@ def main():
         except (Exception, psycopg2.DatabaseError) as error:
             print('Encountered error', error)
             
-    # label .begin
     print("1: Login")
     print("2: Create account")
     print("3: Quit program")
