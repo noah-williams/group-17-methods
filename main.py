@@ -6,21 +6,23 @@ import Order
 
 checkVar = False
 
+
 def main():
     # Login with username & password
-    if checkVar != True:
+    if not checkVar:
         try:
-            conn = psycopg2.connect(
-                host="localhost",
-                database="testdb",
-                user="postgres",
-                password="<password goes here>")
-            cur = conn.cursor()
+            connect = psycopg2.connect(
+                host="35.238.14.225",
+                database="postgres",
+                user="group17",
+                password="group17"
+            )
+            cur = connect.cursor()
         except (Exception, psycopg2.DatabaseError) as error:
             print('Encountered error', error)
 
     while 1:
-        
+
         print("1: Login")
         print("2: Create account")
         print("3: Quit program")
@@ -29,43 +31,15 @@ def main():
         # if user presses 1, have inputs for username and password, then check if they exist in database
         if user_input == 1:
             # todo
-            loginCheck = False
-            userName = input("Username: ")
-            passWord = input("Password: ")
-            userNameList = ["jag1065", "ch3083", "jrs1381", "nmw178"]
-            passWordList = ["Pa55w0rd", "drowssaP", "WordPass", "Password"]
-            for x in userNameList:
-                if x == userName:
-                    listIndex = userNameList.index(x)
-                    if passWordList[listIndex] == passWord:
-                        loginCheck = True
-                        print("Login successful.")
-                        break
-                    else:
-                        print("Password incorrect. Please try again.")
-                        break
-                else:
-                    print("Username not recognized. Please try again or create an account.")
-                    break
-            if loginCheck == True:
-                break
-
+            User.log(cur)
         # if user presses 2, have inputs to create a new user, then send them to the store
         if user_input == 2:
-            first = input("What is your first name? ")
-            last = input("What is your last name? ")
-            new_username = input("What do you want your username to be? ")
-            password = input("What do you want your password to be? ")
-            ShippingAddy = input("What is your shipping address? ")
-            payment = input("What is your card number? ")
-            new_user = User.User(first, last, new_username, password, ShippingAddy, payment)
-            print(new_user.FirstName)
+
+
             break
 
         if user_input == 3:
             quit()
-
-        
 
     # Once logged in, run store functionality
 
@@ -77,7 +51,7 @@ def main():
     user_input = int(input("Please select an option 1-5: "))
     while 1 <= user_input <= 5:
 
-            # if user presses 1, have inputs for username and password, then check if they exist in database
+        # if user presses 1, have inputs for username and password, then check if they exist in database
         if user_input == 1:
             Game.view()
 

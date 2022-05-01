@@ -1,4 +1,5 @@
 import Order
+import psycopg2
 
 class User:
     def __init__(user, FirstName, LastName, Username, Password, ShippingInfo, PaymentInfo):
@@ -7,7 +8,7 @@ class User:
         user.Username = Username
         user.Password = Password
         user.ShippingInfo = ShippingInfo
-        user.PaymentInfo= PaymentInfo
+        user.PaymentInfo = PaymentInfo
 
     def Login(user, Username, Password):
         #something something database call something something
@@ -15,6 +16,62 @@ class User:
 
     def output_name(user):
         return user.FirstName
+
+def addUser(cursor):
+    flag0,flag1,flag2,flag3,flag4,flag5 = 0
+    firstTMP = input("What is your first name? ")
+    if (isinstance(firstTMP,str)):
+        firstName = firstTMP
+        flag0 = 1
+    lastTMP = input("What is your last name? ")
+    if (isinstance(lastTMP,str)):
+        lastName = lastTMP
+        flag1 = 1
+    new_usernameTMP = input("What do you want your username to be? ")
+    if (isinstance(new_usernameTMP, str)):
+        username = new_usernameTMP
+        flag2 = 1
+    passwordTMP = input("What do you want your password to be? ")
+    if (isinstance(passwordTMP, str)):
+        password = passwordTMP
+        flag3 = 1
+    ShippingAddyTMP = input("What is your shipping address? ")
+    if (isinstance(ShippingAddyTMP, str)):
+        address = ShippingAddyTMP
+        flag4 = 1
+    paymentTMP = input("What is your card number? ")
+    if (isinstance(paymentTMP, str)):
+        cardNumber = paymentTMP
+        flag5 = 1
+    #new_user = User.User(first, last, new_username, password, ShippingAddy, payment)
+    #print(new_user.FirstName)
+    if ((flag0 &flag1 & flag2 & flag3 & flag4 & flag5)==1):
+
+        cursor.execute("INSERT INTO users values('" +  +"'")
+
+
+
+
+def log(cursor):
+    loginCheck = False
+    userName = input("Username: ")
+
+    # userNameList = ["jag1065", "ch3083", "jrs1381", "nmw178"]
+    try:
+        cursor.execute("GRANT ALL PRIVILEGES ON TABLE users TO group17")
+        cursor.execute("SELECT * FROM users WHERE username LIKE '" + userName + "'")
+        check = cursor.fetchone()
+        #print(check)
+        passWord = input("Password: ")
+        if (passWord == check[4]):
+            inUser = userName
+            loginCheck = True
+    except(Exception, psycopg2.DatabaseError) as error:
+            print('Encountered error', error)
+    if loginCheck == True:
+        print("Welcome, " + userName + "!")
+
+
 
 def view():
     print("1: Go back")
