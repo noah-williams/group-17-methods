@@ -187,7 +187,7 @@ def viewCart(connection, cursor):
             orderItems = cursor.fetchall()
             cursor.execute("SELECT paymentInfo FROM cart WHERE userid = (%s)", (UserID,))
             paymentInfo = cursor.fetchone()
-            Order.new_order(totalCost, orderItems, paymentInfo, cursor)
+            Order.add_order(totalCost, orderItems, paymentInfo, cursor)
             cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
             connection.commit()
 
