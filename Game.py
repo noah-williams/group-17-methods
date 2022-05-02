@@ -1,7 +1,10 @@
+import main
+import psycopg2
+
 def view(cursor):
     # gameList = ["The Elder Scrolls V: Skyrim – Special Edition", "Elden Ring", "Cyberpunk 2077", "DEATHLOOP", "LEGO Star Wars: The Skywalker Saga", "Marvel’s Avengers", "Monster Hunter: World", "Stardew Valley", "Madden NFL 22", "Battlefield 2042"]
-    cursor.execute("GRANT ALL PRIVILEGES ON TABLE games TO group17")
-    cursor.execute("SELECT games.\"gameName\" FROM games")
+    # cursor.execute("GRANT ALL PRIVILEGES ON TABLE games TO group17")
+    cursor.execute("SELECT \'gameName\' FROM games")
     games = cursor.fetchall()
 
     while 1:
@@ -25,5 +28,4 @@ def view(cursor):
             for x in game_data:
                 print(labels[i], ": ", x , sep='')
                 i += 1
-            print("\n\n")
-            
+            print("\n\n\n")
