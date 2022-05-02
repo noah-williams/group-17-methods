@@ -20,7 +20,7 @@ def view(connection, cursor):
 
         else:
             print("\n\n\nFull info for " + new_games[game_input - 2])
-            cursor.execute("SELECT * FROM games WHERE games.title = %s", str(new_games[game_input - 2]))
+            cursor.execute("SELECT * FROM games WHERE games.title = %s", str(new_games[game_input - 2])) # Something in this line is causing a string coversion error
             game_data = cursor.fetchone()
             labels = ["GameId", "Title", "Developer", "Publisher", "Genre", "Price", "Rating", "Inventory", "Rating", "Release Date"]
             i = 0
