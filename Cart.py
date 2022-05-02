@@ -1,7 +1,7 @@
 import main
 
 
-def view(cursor):
+def view(connection, cursor):
     while 1:
 
         print("\n\n\n1: Go back")
@@ -14,16 +14,14 @@ def view(cursor):
             return
 
         if cart_input == 2:
-            cursor.execute("SELECT * FROM cart WHERE username = '" + main.signed_in_username + "'")
+            cursor.execute("SELECT * FROM carts WHERE userid = " + str(main.signed_in_id))
             row = cursor.fetchall()
             print("\n\n\n" + row)
 
         if cart_input == 3:
-            cursor.execute("DELETE FROM cart WHERE username = '" + main.signed_in_username + "' AND title = '" + "'")
-            row = cursor.fetchone()
-            print(row)
+            cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
+            connection.commit()
 
         if cart_input == 4:
-            cursor.execute("DELETE FROM cart WHERE username = '" + main.signed_in_username + "'")
-            row = cursor.fetchone()
-            print(row)
+            cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id))
+            connection.commit()

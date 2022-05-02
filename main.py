@@ -5,7 +5,7 @@ import User
 import Order
 
 
-global signed_in_username
+global signed_in_id
 
 
 def login():
@@ -26,10 +26,12 @@ def login():
 
             if user_input == 1:
                 User.log(cur)
+                connect.commit()
                 store()
 
             if user_input == 2:
                 User.add_user(cur)
+                connect.commit()
                 store()
 
             if user_input == 3:
@@ -58,13 +60,13 @@ def store():
             user_input = int(input("\nPlease select an option 1-5: "))
 
             if user_input == 1:
-                Game.view(cur)
+                Game.view(connect, cur)
 
             if user_input == 2:
-                Cart.view(cur)
+                Cart.view(connect, cur)
 
             if user_input == 3:
-                User.view(cur)
+                User.view(connect, cur)
 
             if user_input == 4:
                 login()
