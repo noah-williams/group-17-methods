@@ -18,7 +18,7 @@ def view(connection, cursor):
         if game_input == 1:
             return
 
-        else:
+        elif game_input < (count_var - 1):
             print("\n\n\nFull info for " + new_games[game_input - 2])
             game_title = str(new_games[game_input - 2])
             cursor.execute('SELECT * FROM games WHERE games.title = (%s)', (game_title,))
