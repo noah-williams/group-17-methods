@@ -15,8 +15,6 @@ class Cart():
         # creates pretty list of the userids in cart? Honestly I don't know what this line does
         Users_list = [item for t in users_in_carts_table for item in t]
 
-
-
         existing_cart_flag = False
 
         for i in Users_list:
