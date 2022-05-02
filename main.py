@@ -106,7 +106,7 @@ def store():
             password="group17")
         cur = connect.cursor()
 
-        new_cart = Cart.Cart(signed_in_id, cur)
+        Cart.Cart(signed_in_id, cur, connect)
 
         while 1:
 
@@ -176,10 +176,6 @@ def viewCart(connection, cursor):
         if cart_input == 4:
             cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
             connection.commit()
-
-
-def doNothing():
-    pass
 
 
 def viewUser(connection, cursor):
