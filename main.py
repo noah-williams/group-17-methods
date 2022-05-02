@@ -107,6 +107,8 @@ def store():
             password="group17")
         cur = connect.cursor()
 
+        new_cart = Cart(signed_in_id, cur)
+
         while 1:
 
             print("\n\n\n1: Show games")
