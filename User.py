@@ -1,6 +1,5 @@
 import Order
 import main
-import psycopg2
 
 
 class User:
@@ -47,7 +46,6 @@ def log(cursor):
 
     while 1:
         username = input("\n\n\nUsername: ")
-        # usernames = ["jag1065", "ch3083", "jrs1381", "nmw178"]
 
         # cursor.execute("GRANT ALL PRIVILEGES ON TABLE users TO group17")
         cursor.execute("SELECT username FROM users")

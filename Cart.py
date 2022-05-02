@@ -16,11 +16,16 @@ def view(connection, cursor):
         if cart_input == 2:
             cursor.execute("SELECT * FROM carts WHERE userid = " + str(main.signed_in_id))
             row = cursor.fetchall()
-            print("\n\n\n" + row)
+
+            new_row = [item for t in row for item in t]
+            print("\n\n")
+            for i in new_row:
+                print(i)
 
         if cart_input == 3:
-            cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
-            connection.commit()
+            # cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
+            # connection.commit()
+            return
 
         if cart_input == 4:
             cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id))

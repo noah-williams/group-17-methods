@@ -1,7 +1,7 @@
 def view(connection, cursor):
-    # gameList = ["The Elder Scrolls V: Skyrim – Special Edition", "Elden Ring", "Cyberpunk 2077", "DEATHLOOP", "LEGO Star Wars: The Skywalker Saga", "Marvel’s Avengers", "Monster Hunter: World", "Stardew Valley", "Madden NFL 22", "Battlefield 2042"]
     cursor.execute("SELECT title FROM games")
     games = cursor.fetchall()
+    new_games = [item for t in games for item in t]
 
     while 1:
 
@@ -12,8 +12,8 @@ def view(connection, cursor):
             count_var += 1
         game_input = int(input("\nPlease select an option 1-" + str(count_var) + ": "))
 
-        if game_input == 0:
+        if game_input == 1:
             return
 
         else:
-            print("Full info for " + games[game_input - 2])
+            print("\n\n\nFull info for " + new_games[game_input - 2])
