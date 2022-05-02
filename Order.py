@@ -29,9 +29,10 @@ class Order:
         return user.FirstName
 
 def add_order(TotalCost, OrderItems, PaymentInfo, cursor):
-    # cursor.execute('SELECT ID ')
-    # UserID = cursor.fetchone()
-    UserID = 1
+    cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
+    temp = cursor.fetchone()
+    for x in temp:
+        UserID = x
     OrderDate = date.today()
     OrderTime = datetime.now().strftime("%H :%M: %S")
     Order(UserID, OrderDate, OrderTime, TotalCost, OrderItems, PaymentInfo, cursor)
