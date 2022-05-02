@@ -18,10 +18,16 @@ def login():
 
         while 1:
 
-            print("\n\n\n1: Login")
+            print("\n\n1: Login")
             print("2: Create account")
             print("3: Quit program")
-            user_input = int(input("\nPlease select an option 1-3: "))
+
+            user_inputTMP = input("\nPlease select an option 1-3: ")
+            try:
+                user_input = int(user_inputTMP)
+            except(Exception, TypeError, ValueError):
+                user_input = -1
+                print("\n\nPlease choose a valid option.")
 
             if user_input == 1:
                 log(cur)
@@ -47,7 +53,13 @@ def add_user(cursor):
     password = input("What do you want your password to be? ")
     shipping = input("What is your shipping address? ")
     payment = input("What is your card number? ")
-    age = int(input("What is your age? "))
+    while 1:
+        ageTMP = input("What is your age? ")
+        try:
+            age = int(ageTMP)
+            break
+        except(Exception, TypeError, ValueError):
+            print("Please input a valid age integer")
 
     User.User(first, last, new_username, password, shipping, payment, age, cursor)
 
@@ -102,7 +114,12 @@ def store():
             print("3: Show account")
             print("4: Logout")
             print("5: Quit program")
-            user_input = int(input("\nPlease select an option 1-5: "))
+            user_inputTMP = input("\nPlease select an option 1-5: ")
+            try:
+                user_input = int(user_inputTMP)
+            except(Exception, ValueError, TypeError):
+                user_input = -1
+                print("Invalid Integer Chosen, try again")
 
             if user_input == 1:
                 viewGames(connect, cur)
@@ -131,7 +148,12 @@ def viewCart(connection, cursor):
         print("2: View cart")
         print("3: Remove game")
         print("4: Checkout")
-        cart_input = int(input("\nPlease select an option 1-4: "))
+        cart_inputTMP = input("\nPlease select an option 1-4: ")
+        try:
+            cart_input = int(cart_inputTMP)
+        except(Exception, TypeError, ValueError):
+            cart_input = -1
+            print("Invalid integer entry.")
 
         if cart_input == 1:
             return
@@ -155,6 +177,10 @@ def viewCart(connection, cursor):
             connection.commit()
 
 
+def doNothing():
+    pass
+
+
 def viewUser(connection, cursor):
     global signed_in_id
     while 1:
@@ -163,7 +189,13 @@ def viewUser(connection, cursor):
         print("2: View orders")
         print("3: Update info")
         print("4: Delete account")
-        account_input = int(input("\nPlease select an option 1-4: "))
+        account_inputTMP = input("\nPlease select an option 1-4: ")
+
+        try:
+            account_input = int(account_inputTMP)
+        except (Exception, TypeError, ValueError):
+            account_input = -1
+            print("Please select a valid choice.")
 
         if account_input == 1:
             return
@@ -180,7 +212,11 @@ def viewUser(connection, cursor):
                     print(i)
 
                 print("1: Go back")
-                order_input = int(input("\nPlease press 1: "))
+                order_inputTMP = input("\nPlease press 1: ")
+                try:
+                    order_input = int(order_inputTMP)
+                except(Exception, ValueError, TypeError):
+                    order_input = 1
 
         if account_input == 3:
             while 1:
@@ -198,7 +234,11 @@ def viewUser(connection, cursor):
                 print("3: Update payment")
                 print("4: Reset password")
                 print("5: Update age")
-                update_input = int(input("\nPlease select an option 1-5: "))
+                update_inputTMP = input("\nPlease select an option 1-5: ")
+                try:
+                    update_input = int(update_inputTMP)
+                except(Exception, ValueError, TypeError):
+                    update_input = -1
 
                 if update_input == 1:
                     break
@@ -222,7 +262,14 @@ def viewUser(connection, cursor):
                     connection.commit()
 
                 if update_input == 5:
-                    new_age = int(input("\n\n\nWhat is your new age? "))
+                    while 1:
+                        new_ageTMP = input("\n\n\nWhat is your new age? ")
+                        try:
+                            new_age = int(new_ageTMP)
+                            break
+                        except(Exception, ValueError, TypeError):
+                            print("Please enter a valid integer age")
+
                     cursor.execute("UPDATE users SET age = " + str(new_age) + " WHERE id = " + str(signed_in_id))
                     connection.commit()
 
@@ -255,24 +302,29 @@ def viewGames(connection, cursor):
         for x in games:
             print(count_var, ": ", x, sep='')
             count_var += 1
-        game_input = int(input("\nPlease select an option 1-" + str(count_var - 1) + ": "))
 
-        if game_input == 1:
-            return
+        try:
+            game_input = int(input("\nPlease select an option 1-" + str(count_var - 1) + ": "))
 
-        else:
-            print("\n\n\nFull info for " + new_games[game_input - 2])
-            game_title = str(new_games[game_input - 2])
-            cursor.execute('SELECT * FROM games WHERE games.title = (%s)', (game_title,))
-            game_data = cursor.fetchone()
-            labels = ["GameId", "Title", "Developer", "Publisher", "Genre", "Price", "ESRB", "Inventory", "User Rating",
-                      "Release Date"]
-            i = 0
-            for x in game_data:
-                labels[i], ": ",
-                print(labels[i], ": ", x, sep='')
-                i += 1
-            print("\n")
+            if game_input == 1:
+                return
+
+            else:
+                print("\n\n\nFull info for " + new_games[game_input - 2])
+                game_title = str(new_games[game_input - 2])
+                cursor.execute('SELECT * FROM games WHERE games.title = (%s)', (game_title,))
+                game_data = cursor.fetchone()
+                labels = ["GameId", "Title", "Developer", "Publisher", "Genre", "Price", "ESRB", "Inventory",
+                          "User Rating",
+                          "Release Date"]
+                i = 0
+                for x in game_data:
+                    labels[i], ": ",
+                    print(labels[i], ": ", x, sep='')
+                    i += 1
+                print("\n")
+        except (BaseException, TypeError) as error:
+            print('Please select a valid option', error)
 
 
 def lower_stock(connection, cursor, title):
@@ -289,7 +341,6 @@ def lower_stock(connection, cursor, title):
     for y in row2:
         temp2 = int(y)
     print(temp2)
-
 
 
 if __name__ == "__main__":
