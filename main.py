@@ -68,7 +68,7 @@ def log(cursor):
     username_correct = False
 
     while 1:
-        username = input("\n\n\nUsername: ")
+        username = input("\n\nUsername: ")
 
         # cursor.execute("GRANT ALL PRIVILEGES ON TABLE users TO group17")
         cursor.execute("SELECT username FROM users")
@@ -110,7 +110,7 @@ def store():
 
         while 1:
 
-            print("\n\n\n1: Show games")
+            print("\n\n1: Show games")
             print("2: Show cart")
             print("3: Show account")
             print("4: Logout")
@@ -145,7 +145,7 @@ def viewCart(connection, cursor):
     global signed_in_id
     while 1:
 
-        print("\n\n\n1: Go back")
+        print("\n\n1: Go back")
         print("2: View cart")
         print("3: Remove game")
         print("4: Checkout")
@@ -160,13 +160,34 @@ def viewCart(connection, cursor):
             return
 
         if cart_input == 2:
-            cursor.execute("SELECT * FROM carts WHERE userid = " + str(signed_in_id))
-            row = cursor.fetchall()
+            # Gets all the gameids in their cart
+            cursor.execute("SELECT games FROM carts;")
 
-            new_row = [item for t in row for item in t]
-            print("\n\n")
-            for i in new_row:
-                print(i)
+            # puts them in a list
+            gameids = cursor.fetchall()
+
+            # Then a different list
+            better_gameids = [item for t in gameids for item in t]
+
+            total = 0.00
+            print("\nThe items in your cart are:\n")
+            for i in better_gameids:
+                cursor.execute("SELECT title,price FROM games WHERE id = " + i +";")
+                cart_item = cursor.fetchone()
+                print(str(cart_item[0]) + " " + str(cart_item[1]))
+                cart_item_price = cart_item[1]
+                #cart_item_price = cart_item_price[1:]
+                total = total + float(cart_item_price[1:])
+
+            print("\nThe total price of the items in your cart is: ", total)
+
+            #cursor.execute("SELECT * FROM carts WHERE userid = " + str(signed_in_id))
+            #row = cursor.fetchall()
+
+            #new_row = [item for t in row for item in t]
+            #print("\n")
+            #for i in new_row:
+            #    print(i)
 
         if cart_input == 3:
             # cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
