@@ -25,4 +25,5 @@ def view(cursor):
             for x in game_data:
                 print(labels[i], ": ", x , sep='')
                 i += 1
-            print("\n\n\n")
+            print("\n\n")
+            
