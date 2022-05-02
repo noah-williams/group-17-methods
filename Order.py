@@ -13,7 +13,7 @@ class Order:
             order.OrderItems = OrderItems
             order.paymentInfo = PaymentInfo
 
-            cursor.execute("SELECT id FROM orders")
+            cursor.execute("SELECT orderid FROM orders")
             ids = cursor.fetchall()
 
             cursor.execute(
