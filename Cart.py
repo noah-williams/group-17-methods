@@ -5,15 +5,17 @@ class Cart():
     cart_list = []
 
     def __init__(cart, userID, cursor, connect):
-        # takes in what user is using the service
+        # takes in which user is using the service
         cart.userID = userID
 
         # sql statement to see if the user already has a cart
         cursor.execute("SELECT userid FROM carts")
-        # honestly I don't know what this line does
-        cartid = cursor.fetchall()
-        # Or this line
-        Users_list = [item for t in cartid for item in t]
+        # Creates ugly list from sql statement
+        users_in_carts_table = cursor.fetchall()
+        # creates pretty list of the userids in cart? Honestly I don't know what this line does
+        Users_list = [item for t in users_in_carts_table for item in t]
+
+
 
         existing_cart_flag = False
 
@@ -22,13 +24,16 @@ class Cart():
                 existing_cart_flag = True
 
         if existing_cart_flag == False:
-            if not cartid:
+
+            if not users_in_carts_table:
                 cursor.execute(
                     "INSERT INTO carts(cartid, userid, games, total) VALUES ( 1, " + str(userID) + ",  ' ' , 0.0);" 
                 )
             else:
+                cursor.execute("select max(cartid) from carts")
+                max_cart_row = cursor.fetchone()
+                new_cartid = int(max_cart_row[0]) + 1
                 cursor.execute(
-                    'INSERT INTO carts(cartid, userid, games, total) VALUES (%s, %s, %s, %s)',
-                    (max(cartid)+1, userID, '', 0.0)
+                    "INSERT INTO carts(cartid, userid, games, total) VALUES (" + str(new_cartid) + ", " + str(userID) + ", ' ', 0.0);"
                 )
             connect.commit()
