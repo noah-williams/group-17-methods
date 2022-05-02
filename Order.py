@@ -37,5 +37,23 @@ def add_order(TotalCost, OrderItems, PaymentInfo, cursor):
     OrderTime = datetime.now().strftime("%H :%M: %S")
     Order(UserID, OrderDate, OrderTime, TotalCost, OrderItems, PaymentInfo, cursor)
 
-def view():
+def view(cursor):
+    cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
+    temp = cursor.fetchone()
+    for x in temp:
+        UserID = x
+    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (UserID,))
+    orders = cursor.fetchall()
+    count = len(orders)
+    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (UserID,))
+    x = 0
+    labels = ["Order ID", "User ID", "Order Date", "Order Time", "Total Price", "Games", "Payment Info"]
+    while x < count:
+        order = cursor.fetchone()
+        i = 0
+        for y in order:
+            print(labels[i], ": ", x , sep='')
+            i += 1
+        print()
+        x += 1
     return
