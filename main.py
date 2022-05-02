@@ -106,7 +106,7 @@ def store():
             password="group17")
         cur = connect.cursor()
 
-        Cart.Cart(signed_in_id, cur, connect)
+        new_cart = Cart.Cart(signed_in_id, cur, connect)
 
         while 1:
 
@@ -123,7 +123,7 @@ def store():
                 print("Invalid Integer Chosen, try again")
 
             if user_input == 1:
-                viewGames(connect, cur)
+                viewGames(connect, cur, new_cart)
 
             if user_input == 2:
                 viewCart(connect, cur)
@@ -287,14 +287,14 @@ def viewUser(connection, cursor):
                     login()
 
 
-def viewGames(connection, cursor):
+def viewGames(connection, cursor, new_cart):
     cursor.execute("SELECT title FROM games")
     games = cursor.fetchall()
     new_games = [item for t in games for item in t]
 
     while 1:
 
-        print("\n\n\n1: Go back")
+        print("\n\n1: Go back")
         count_var = 2
         for x in games:
             print(count_var, ": ", x, sep='')
@@ -319,6 +319,10 @@ def viewGames(connection, cursor):
                     print(labels[i], ": ", x, sep='')
                     i += 1
                 print("\n")
+                if input('Do you want to add this game to your cart? y/n: ') == ('y' or 'Y'):
+                    #print(game_data[5])
+                    new_cart.add_to_cart(game_data[0], game_data[5], cursor, connection)
+
         except (BaseException, TypeError) as error:
             print('Please select a valid option', error)
 
