@@ -195,6 +195,20 @@ def viewCart(connection, cursor):
             return
 
         if cart_input == 4:
+            cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
+            temp = cursor.fetchone()
+            for x in temp:
+                UserID = x
+            cursor.execute("SELECT price FROM cart WHERE userid = (%s)", (UserID,))
+            priceList = cursor.fetchall()
+            totalCost = 0
+            for price in priceList:
+                totalCost += price
+            cursor.execute("SELECT title FROM cart WHERE userid = (%s)", (UserID,))
+            orderItems = cursor.fetchall()
+            cursor.execute("SELECT paymentInfo FROM cart WHERE userid = (%s)", (UserID,))
+            paymentInfo = cursor.fetchone()
+            Order.add_order(totalCost, orderItems, paymentInfo, cursor)
             cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
             connection.commit()
 
