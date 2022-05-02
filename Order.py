@@ -1,6 +1,5 @@
 import Cart
 import User
-from User import PaymentInfo
 import main
 import datetime
 from datetime import date
@@ -14,7 +13,7 @@ class Order:
             order.OrderTime = OrderTime
             order.TotalCost = TotalCost
             order.OrderItems = OrderItems
-            order.paymentInfo = User.PaymentInfo
+            order.paymentInfo = PaymentInfo
 
             cursor.execute("SELECT id FROM orders")
             ids = cursor.fetchall()
