@@ -18,7 +18,7 @@ def view(cursor):
 
         else:
             print("Full info for " + games[game_input - 1])
-            cursor.execute("SELECT * FROM games WHERE games.\"gameID\" = (%s), (game_input))
+            cursor.execute("SELECT * FROM games WHERE games.\"gameID\" = %s", game_input)
             game_data = cursor.fetchall()
             labels = ["GameId", "Title", "Developer", "Publisher", "Genre", "Price", "Rating", "Inventory", "Rating", "Release Date"]
             i = 0
