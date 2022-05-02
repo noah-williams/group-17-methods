@@ -171,23 +171,20 @@ def viewCart(connection, cursor):
 
             total = 0.00
             print("\nThe items in your cart are:\n")
+            # Iterates over each of your cart items ands lists the games in your cart
             for i in better_gameids:
+                # Finds each game in the games table
                 cursor.execute("SELECT title,price FROM games WHERE id = " + i +";")
                 cart_item = cursor.fetchone()
+
+                #prints the game and the price of the game
                 print(str(cart_item[0]) + " " + str(cart_item[1]))
+
+                # Adds the price of each game to a total
                 cart_item_price = cart_item[1]
-                #cart_item_price = cart_item_price[1:]
                 total = total + float(cart_item_price[1:])
 
             print("\nThe total price of the items in your cart is: ", total)
-
-            #cursor.execute("SELECT * FROM carts WHERE userid = " + str(signed_in_id))
-            #row = cursor.fetchall()
-
-            #new_row = [item for t in row for item in t]
-            #print("\n")
-            #for i in new_row:
-            #    print(i)
 
         if cart_input == 3:
             # cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
