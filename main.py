@@ -319,7 +319,6 @@ def viewGames(connection, cursor):
                           "Release Date"]
                 i = 0
                 for x in game_data:
-                    labels[i], ": ",
                     print(labels[i], ": ", x, sep='')
                     i += 1
                 print("\n")
