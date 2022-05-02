@@ -66,7 +66,6 @@ def add_user(cursor):
 
 def log(cursor):
     username_correct = False
-    password_correct = False
 
     while 1:
         username = input("\n\n\nUsername: ")
@@ -81,7 +80,7 @@ def log(cursor):
                 username_correct = True
 
         if username_correct:
-            break
+           break
         else:
             print("\nThere is no account with this username!")
 
