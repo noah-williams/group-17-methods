@@ -213,9 +213,13 @@ def viewCart(connection, cursor):
                     print(str(count_var) + ": " + str(cart_item[0]) + " " + str(cart_item[1]), sep='')
 
                     count_var += 1
-                responce = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
+                responceTMP = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
                 count_var -= 1
-
+                try:
+                    responce = int(responceTMP)
+                except(Exception, TypeError, ValueError):
+                    responce = -1
+                    print("Invalid integer entry.")
                 if responce == '1':
                     break
                 if 1 < int(responce) <= count_var:
@@ -226,39 +230,49 @@ def viewCart(connection, cursor):
                     print("It has been removed")
 
         if cart_input == 4:
-            cursor.execute("SELECT total FROM carts WHERE userid = " + str(signed_in_id))
-            priceList = cursor.fetchall()
-            totalCost = 0
-            new_priceList = [item for t in priceList for item in t]
-            for price in new_priceList:
-                price = float(price[1:])
-                totalCost += price
+            cursor.execute("SELECT COUNT(*) FROM carts WHERE userid = " + str(signed_in_id))
+            if cursor.fetchone()[0] > 0:
+                cursor.execute("SELECT total FROM carts WHERE userid = " + str(signed_in_id))
+                priceList = cursor.fetchall()
+                totalCost = 0
+                new_priceList = [item for t in priceList for item in t]
+                for price in new_priceList:
+                    price = float(price[1:])
+                    totalCost += price
 
-            cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id) + " ORDER BY games;")
-            gameids = cursor.fetchall()
-            better_gameids = [item for t in gameids for item in t]
-            new_items = []
-            for i in better_gameids:
-                # Finds each game in the games table
-                cursor.execute("SELECT title FROM games WHERE id = " + str(i))
-                cart_items = cursor.fetchall()
-                temp = [item for t in cart_items for item in t]
-                for item in temp:
-                    new_items.append(item)
+                cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id) + " ORDER BY games;")
+                gameids = cursor.fetchall()
+                better_gameids = [item for t in gameids for item in t]
+                new_items = []
+                for i in better_gameids:
+                    # Finds each game in the games table
+                    cursor.execute("SELECT title FROM games WHERE id = " + str(i))
+                    cart_items = cursor.fetchall()
+                    temp = [item for t in cart_items for item in t]
+                    for item in temp:
+                        new_items.append(item)
 
-                cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " and games = '" + str(i) + "' ORDER BY games;")
-                count = cursor.fetchall()
-                new_count = [item for t in count for item in t]
+                    cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " and games = '" + str(i) + "' ORDER BY games;")
+                    count = cursor.fetchall()
+                    new_count = [item for t in count for item in t]
 
-            cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
-            paymentInfo = cursor.fetchone()
 
-            Order.add_order(totalCost, better_gameids, paymentInfo, new_count, cursor, connection, signed_in_id)
-            # print(new_items)
-            for j in range(len(new_items)):
-                lower_stock(connection, cursor, new_items[j], new_count[j])
-            cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
-            connection.commit()
+                cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
+                paymentInfo = cursor.fetchone()
+
+                Order.add_order(totalCost, better_gameids, paymentInfo, new_count, cursor, connection, signed_in_id)
+                # print(new_items)
+
+                cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " ORDER BY games;")
+                count2 = cursor.fetchall()
+                better_count = [item for t in count2 for item in t]
+                for j in range(len(new_items)):
+                    print(better_count[j])
+                    lower_stock(connection, cursor, new_items[j], better_count[j])
+                cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
+                connection.commit()
+            else:
+                print("\n\n\nPlease choose a game to checkout!")
 
 
 def viewUser(connection, cursor):
