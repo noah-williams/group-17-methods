@@ -110,9 +110,9 @@ def store():
 
         while 1:
 
-            print("\n\n1: Show games")
-            print("2: Show cart")
-            print("3: Show account")
+            print("\n\n1: Show store page")
+            print("2: Show cart page")
+            print("3: Show account page")
             print("4: Logout")
             print("5: Quit program")
             user_inputTMP = input("\nPlease select an option 1-5: ")
@@ -175,18 +175,18 @@ def viewCart(connection, cursor):
             # Iterates over each of your cart items ands lists the games in your cart
             for i in better_gameids:
                 # Finds each game in the games table
-                cursor.execute("SELECT title,price FROM games WHERE id = " + i +";")
+                cursor.execute("SELECT games.title, carts.total, carts.gamescount FROM carts INNER JOIN games ON carts.games = games.id WHERE games = " + str(i) + " and userid = " + str(signed_in_id))
                 cart_item = cursor.fetchone()
 
                 #prints the game and the price of the game
-                print(numbered, ": ",str(cart_item[0]) + " " + str(cart_item[1]))
+                print(numbered, ": ",str(cart_item[0]) + " x" + str(cart_item[2]) + ", " + str(cart_item[1]))
 
                 # Adds the price of each game to a total
                 cart_item_price = cart_item[1]
                 total += float(cart_item_price[1:])
                 numbered += 1
 
-            print("\nThe total price of the items in your cart is: ", total)
+            print("\nThe total price of the items in your cart is: $", total)
 
         if cart_input == 3:
             while 1:
@@ -206,11 +206,11 @@ def viewCart(connection, cursor):
                 # Iterates over each of your cart items ands lists the games in your cart
                 for i in better_gameids:
                     # Finds each game in the games table
-                    cursor.execute("SELECT title,price FROM games WHERE id = " + i +";")
+                    cursor.execute("SELECT title,price FROM games WHERE id = " + str(i) +";")
                     cart_item = cursor.fetchone()
 
                     #prints the game and the price of the game
-                    print(count_var, ": ", str(cart_item[0]) + " " + str(cart_item[1]), sep='')
+                    print(str(count_var) + ": " + str(cart_item[0]) + " " + str(cart_item[1]), sep='')
 
                     count_var += 1
                 responce = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
@@ -239,17 +239,23 @@ def viewCart(connection, cursor):
             better_gameids = [item for t in gameids for item in t]
             new_items = []
             for i in better_gameids:
-                    # Finds each game in the games table
-                    cursor.execute("SELECT title FROM games WHERE id = " + i +";")
-                    cart_items = cursor.fetchall()
-                    temp = [item for t in cart_items for item in t]
-                    for item in temp:
-                        new_items.append(item)
+                # Finds each game in the games table
+                cursor.execute("SELECT title FROM games WHERE id = " + str(i) +";")
+                cart_items = cursor.fetchall()
+                temp = [item for t in cart_items for item in t]
+                for item in temp:
+                    new_items.append(item)
+
+                cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " and games = '" + str(i) + "';")
+                count = cursor.fetchone()
+                print(count[0])
 
             cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
             paymentInfo = cursor.fetchone()
 
-            Order.add_order(totalCost, better_gameids, paymentInfo, cursor, connection, signed_in_id)
+            print("Debug checkout:" + str(count[0]))
+
+            Order.add_order(totalCost, better_gameids, paymentInfo, count[0], cursor, connection, signed_in_id)
             print(new_items)
             for item in new_items:
                 lower_stock(connection, cursor, item)
@@ -290,11 +296,11 @@ def viewUser(connection, cursor):
                     print("Payment method: " + str(count[i][4]))
                     print("\nGames purchased:\n")
 
-                    cursor.execute("SELECT games.title FROM orders INNER JOIN games ON orders.gameid=games.id WHERE orders.userid = " + str(signed_in_id) + " AND orders.orderid = " + str(i+1))
+                    cursor.execute("SELECT games.title, orders.gamescount FROM orders INNER JOIN games ON orders.gameid=games.id WHERE orders.userid = " + str(signed_in_id) + " AND orders.orderid = " + str(i+1))
 
                     for j in range(count[i][5]):
                         row = cursor.fetchone()
-                        print(row[0])
+                        print(str(row[0]) + ", x" + str(row[1]))
 
                 print("\n\n\n1: Go back")
                 order_inputTMP = input("Please press 1: ")
@@ -378,9 +384,9 @@ def viewUser(connection, cursor):
 
 
 def viewGames(connection, cursor, new_cart):
-    cursor.execute("SELECT title, stock FROM games")
+    cursor.execute("SELECT title, stock FROM games ORDER BY id")
     games = cursor.fetchall()
-    cursor.execute("SELECT title FROM games")
+    cursor.execute("SELECT title FROM games ORDER BY id")
     game_titles = cursor.fetchall()
     new_games = [item for t in game_titles for item in t]
 
