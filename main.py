@@ -179,7 +179,7 @@ def viewCart(connection, cursor):
                 cart_item = cursor.fetchone()
 
                 #prints the game and the price of the game
-                print(numbered, ": ",str(cart_item[0]) + " x" + str(cart_item[2]) + ", " + str(cart_item[1]))
+                print(numbered, ": ",str(cart_item[0]) + ", x" + str(cart_item[2]) + " - " + str(cart_item[1]))
 
                 # Adds the price of each game to a total
                 cart_item_price = cart_item[1]
@@ -234,31 +234,29 @@ def viewCart(connection, cursor):
                 price = float(price[1:])
                 totalCost += price
 
-            cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id))
+            cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id) + " ORDER BY games;")
             gameids = cursor.fetchall()
             better_gameids = [item for t in gameids for item in t]
             new_items = []
             for i in better_gameids:
                 # Finds each game in the games table
-                cursor.execute("SELECT title FROM games WHERE id = " + str(i) +";")
+                cursor.execute("SELECT title FROM games WHERE id = " + str(i))
                 cart_items = cursor.fetchall()
                 temp = [item for t in cart_items for item in t]
                 for item in temp:
                     new_items.append(item)
 
-                cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " and games = '" + str(i) + "';")
-                count = cursor.fetchone()
-                print(count[0])
+                cursor.execute("SELECT gamescount FROM carts WHERE userid = " + str(signed_in_id) + " and games = '" + str(i) + "' ORDER BY games;")
+                count = cursor.fetchall()
+                new_count = [item for t in count for item in t]
 
             cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
             paymentInfo = cursor.fetchone()
 
-            print("Debug checkout:" + str(count[0]))
-
-            Order.add_order(totalCost, better_gameids, paymentInfo, count[0], cursor, connection, signed_in_id)
-            print(new_items)
-            for item in new_items:
-                lower_stock(connection, cursor, item)
+            Order.add_order(totalCost, better_gameids, paymentInfo, new_count, cursor, connection, signed_in_id)
+            # print(new_items)
+            for j in range(len(new_items)):
+                lower_stock(connection, cursor, new_items[j], new_count[j])
             cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
             connection.commit()
 
@@ -296,7 +294,7 @@ def viewUser(connection, cursor):
                     print("Payment method: " + str(count[i][4]))
                     print("\nGames purchased:\n")
 
-                    cursor.execute("SELECT games.title, orders.gamescount FROM orders INNER JOIN games ON orders.gameid=games.id WHERE orders.userid = " + str(signed_in_id) + " AND orders.orderid = " + str(i+1))
+                    cursor.execute("SELECT games.title, orders.gamescount FROM orders INNER JOIN games ON orders.gameid=games.id WHERE userid = " + str(signed_in_id) + " AND orderid = " + str(i + 1) + "ORDER BY games.id")
 
                     for j in range(count[i][5]):
                         row = cursor.fetchone()
@@ -455,13 +453,13 @@ def viewGameDetails(cursor, connection, cart, gameTitle):
         cart.add_to_cart(game_data[0], game_data[5], cursor, connection)
 
 
-def lower_stock(connection, cursor, title):
+def lower_stock(connection, cursor, title, lowerBy):
     cursor.execute('SELECT stock FROM games WHERE games.title = (%s)', (title,))
     row = cursor.fetchone()
     for x in row:
         temp = int(x)
     print(temp)
-    stock = temp - 1
+    stock = temp - lowerBy
     cursor.execute('UPDATE games SET stock = (%s) WHERE games.title = (%s)', (stock, title,))
     connection.commit()
     cursor.execute('SELECT stock FROM games WHERE games.title = (%s)', (title,))

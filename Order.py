@@ -14,16 +14,13 @@ class Order:
         order.TotalCost = TotalCost
         order.GameID = GameID
         order.Payment = PaymentInfo[0]
-        print("Debug Count:" + str(Count))
         order.Count = Count
-        print("Debug Order.Count:" + str(order.Count))
 
         cursor.execute("INSERT INTO orders VALUES (" + str(order.OrderID) + ", " + str(order.UserID) + ", '" + str(order.OrderDate) + "', '" + str(order.OrderTime) + "', " + str(order.TotalCost) + ", " + str(order.GameID) + ", '" + order.Payment + "', " + str(order.Count) + ");")
         connection.commit()
 
 
 def add_order(TotalCost, OrderItems, PaymentInfo, count, cursor, connection, sign_in):
-    print("Debug add_order:" + str(count))
     OrderDate = date.today()
     OrderTime = datetime.now().strftime("%H:%M:%S")
 
@@ -34,7 +31,9 @@ def add_order(TotalCost, OrderItems, PaymentInfo, count, cursor, connection, sig
         new_ids = [0]
 
     for i in range(len(OrderItems)):
-        Order(max(new_ids)+1, sign_in, OrderDate, OrderTime, TotalCost, OrderItems[i], PaymentInfo, count, cursor, connection)
+        cursor.execute("SELECT gamescount FROM carts WHERE games = " + str(OrderItems[i]))
+        gamescount = cursor.fetchone()
+        Order(max(new_ids)+1, sign_in, OrderDate, OrderTime, TotalCost, OrderItems[i], PaymentInfo, gamescount[0], cursor, connection)
 
 
 def view(cursor, sign_in):
