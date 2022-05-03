@@ -18,7 +18,7 @@ def login():
 
         while 1:
 
-            print("\n\n1: Login")
+            print("\n1: Login")
             print("2: Create account")
             print("3: Quit program")
 
@@ -145,7 +145,7 @@ def viewCart(connection, cursor):
     global signed_in_id
     while 1:
 
-        print("\n\n1: Go back")
+        print("\n1: Go back")
         print("2: View cart")
         print("3: Remove game")
         print("4: Checkout")
@@ -161,7 +161,7 @@ def viewCart(connection, cursor):
 
         if cart_input == 2:
             # Gets all the gameids in their cart
-            cursor.execute("SELECT games FROM carts;")
+            cursor.execute("SELECT games FROM carts where userid = " + signed_in_id + ";")
 
             # puts them in a list
             gameids = cursor.fetchall()
@@ -187,6 +187,37 @@ def viewCart(connection, cursor):
             print("\nThe total price of the items in your cart is: ", total)
 
         if cart_input == 3:
+            while 1:
+                print("Which game do you want to remove?")
+
+                # Gets all the gameids in their cart
+                cursor.execute("SELECT games FROM carts where userid = " + str(signed_in_id) + ";")
+
+                # puts them in a list
+                gameids = cursor.fetchall()
+
+                # Then a different list
+                better_gameids = [item for t in gameids for item in t]
+
+                print("\n1: Go back")
+                count_var = 2
+                # Iterates over each of your cart items ands lists the games in your cart
+                for i in better_gameids:
+                    # Finds each game in the games table
+                    cursor.execute("SELECT title,price FROM games WHERE id = " + i +";")
+                    cart_item = cursor.fetchone()
+
+                    #prints the game and the price of the game
+                    print(count_var, ": ", str(cart_item[0]) + " " + str(cart_item[1]), sep='')
+
+                    count_var += 1
+                responce = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
+
+
+            cursor.execute("SELECT title FROM games")
+            games = cursor.fetchall()
+            new_games = [item for t in games for item in t]
+            
             # cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
             # connection.commit()
             return
