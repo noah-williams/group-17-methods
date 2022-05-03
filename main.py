@@ -83,6 +83,17 @@ def log(cursor):
            break
         else:
             print("\nThere is no account with this username!")
+            print("1. Return")
+            print("2. Try Again")
+            user_inputTMP = input("\nPlease select an option 1-2: ")
+            try:
+                user_input = int(user_inputTMP)
+            except(Exception, TypeError, ValueError):
+                user_input = -1
+                print("\n\nPlease choose a valid option.")
+
+            if user_input == 1:
+                login()    
 
     while 1:
         cursor.execute("SELECT * FROM users WHERE username = '" + username + "'")
@@ -95,6 +106,17 @@ def log(cursor):
             break
         else:
             print("\nWrong password!\n")
+            print("1. Return")
+            print("2. Try Again")
+            user_inputTMP = input("\nPlease select an option 1-2: ")
+            try:
+                user_input = int(user_inputTMP)
+            except(Exception, TypeError, ValueError):
+                user_input = -1
+                print("\n\nPlease choose a valid option.")
+
+            if user_input == 1:
+                login()    
 
 
 def store():
