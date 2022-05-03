@@ -297,18 +297,21 @@ def viewUser(connection, cursor):
                 cursor.execute("SELECT orderid, date, time, total, payment, COUNT(*) FROM orders WHERE userid = '" + str(signed_in_id) + "' GROUP BY orderid, date, time, total, payment")
                 count = cursor.fetchall()
 
+                number = 1;
                 for i in range(len(count)):
-                    print("\nORDER " + str(i+1) + ": -----------------------")
+                    print("\nORDER " + str(number) + ": -----------------------")
                     print("Date/time of purchase: " + str(count[i][1]) + ", at " + str(count[i][2]))
                     print("Total price: " + str(count[i][3]))
                     print("Payment method: " + str(count[i][4]))
                     print("\nGames purchased:\n")
 
-                    cursor.execute("SELECT games.title, orders.gamescount FROM orders INNER JOIN games ON orders.gameid=games.id WHERE userid = " + str(signed_in_id) + " AND orderid = " + str(i + 1) + "ORDER BY games.id")
+                    cursor.execute("SELECT games.title, orders.gamescount FROM orders INNER JOIN games ON orders.gameid=games.id WHERE userid = " + str(signed_in_id) + " AND orderid = " + str(count[i][0]) + " ORDER BY games.id")
 
                     for j in range(count[i][5]):
                         row = cursor.fetchone()
                         print(str(row[0]) + ", x" + str(row[1]))
+
+                    number += 1
 
                 print("\n\n\n1: Go back")
                 order_inputTMP = input("Please press 1: ")
