@@ -213,9 +213,13 @@ def viewCart(connection, cursor):
                     print(str(count_var) + ": " + str(cart_item[0]) + " " + str(cart_item[1]), sep='')
 
                     count_var += 1
-                responce = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
+                responceTMP = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
                 count_var -= 1
-
+                try:
+                    responce = int(responceTMP)
+                except(Exception, TypeError, ValueError):
+                    responce = -1
+                    print("Invalid integer entry.")
                 if responce == '1':
                     break
                 if 1 < int(responce) <= count_var:
