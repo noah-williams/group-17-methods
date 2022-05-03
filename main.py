@@ -68,7 +68,7 @@ def log(cursor):
     username_correct = False
 
     while 1:
-        username = input("\n\nUsername: ")
+        username = input("\nUsername: ")
 
         # cursor.execute("GRANT ALL PRIVILEGES ON TABLE users TO group17")
         cursor.execute("SELECT username FROM users")
@@ -161,7 +161,7 @@ def viewCart(connection, cursor):
 
         if cart_input == 2:
             # Gets all the gameids in their cart
-            cursor.execute("SELECT games FROM carts where userid = " + signed_in_id + ";")
+            cursor.execute("SELECT games FROM carts where userid = " + str(signed_in_id) + ";")
 
             # puts them in a list
             gameids = cursor.fetchall()
@@ -171,6 +171,7 @@ def viewCart(connection, cursor):
 
             total = 0.00
             print("\nThe items in your cart are:\n")
+            numbered = 1
             # Iterates over each of your cart items ands lists the games in your cart
             for i in better_gameids:
                 # Finds each game in the games table
@@ -178,17 +179,18 @@ def viewCart(connection, cursor):
                 cart_item = cursor.fetchone()
 
                 #prints the game and the price of the game
-                print(str(cart_item[0]) + " " + str(cart_item[1]))
+                print(numbered, ": ",str(cart_item[0]) + " " + str(cart_item[1]))
 
                 # Adds the price of each game to a total
                 cart_item_price = cart_item[1]
-                total = total + float(cart_item_price[1:])
+                total += float(cart_item_price[1:])
+                numbered += 1
 
             print("\nThe total price of the items in your cart is: ", total)
 
         if cart_input == 3:
             while 1:
-                print("Which game do you want to remove?")
+                print("\nWhich game do you want to remove?")
 
                 # Gets all the gameids in their cart
                 cursor.execute("SELECT games FROM carts where userid = " + str(signed_in_id) + ";")
@@ -212,15 +214,16 @@ def viewCart(connection, cursor):
 
                     count_var += 1
                 responce = input("\nPlease select an option 1-" + str(count_var - 1) + ": ")
+                count_var -= 1
 
-
-            cursor.execute("SELECT title FROM games")
-            games = cursor.fetchall()
-            new_games = [item for t in games for item in t]
-            
-            # cursor.execute("DELETE FROM carts WHERE userid = " + str(main.signed_in_id) + " AND title = '" + "'")
-            # connection.commit()
-            return
+                if responce == '1':
+                    break
+                if 1 < int(responce) <= count_var:
+                    responce = int(responce)
+                    print(better_gameids[responce])
+                    cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id) + " AND games = " + better_gameids[responce] + " ORDER BY cartid ASC LIMIT 1;")
+                    connection.commit()
+                    print("It has been removed")
 
         if cart_input == 4:
             cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
