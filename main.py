@@ -368,6 +368,8 @@ def viewUser(connection, cursor):
                     break
 
                 if update_input == 2:
+                    cursor.execute("DELETE FROM orders WHERE userid = " + str(signed_in_id))
+                    connection.commit()
                     cursor.execute("DELETE FROM users WHERE id = " + str(signed_in_id))
                     connection.commit()
                     login()
