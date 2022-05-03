@@ -220,28 +220,39 @@ def viewCart(connection, cursor):
                     break
                 if 1 < int(responce) <= count_var:
                     responce = int(responce)
-                    print(better_gameids[responce - 2])
+                    # print(better_gameids[responce - 2])
                     cursor.execute("DELETE FROM carts WHERE ctid IN (SELECT ctid FROM carts WHERE userid = " + str(signed_in_id) + " AND games = '" + str(better_gameids[responce - 2]) + "' LIMIT 1)")
                     connection.commit()
                     print("It has been removed")
 
         if cart_input == 4:
-            cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
-            temp = cursor.fetchone()
-            for x in temp:
-                UserID = x
-            cursor.execute("SELECT price FROM cart WHERE userid = (%s)", (UserID,))
+            cursor.execute("SELECT total FROM carts WHERE userid = " + str(signed_in_id))
             priceList = cursor.fetchall()
             totalCost = 0
-            for price in priceList:
+            new_priceList = [item for t in priceList for item in t]
+            for price in new_priceList:
+                price = float(price[1:])
                 totalCost += price
-            cursor.execute("SELECT title FROM cart WHERE userid = (%s)", (UserID,))
+
+            cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id))
             orderItems = cursor.fetchall()
-            cursor.execute("SELECT paymentInfo FROM cart WHERE userid = (%s)", (UserID,))
+
+
+            new_items = [item for t in orderItems for item in t]
+            integer_items = []
+            for item in new_items:
+                integer_items.append(int(item))
+
+            cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
             paymentInfo = cursor.fetchone()
-            Order.add_order(totalCost, orderItems, paymentInfo, cursor)
+
+            Order.add_order(totalCost, integer_items, paymentInfo, cursor, connection, signed_in_id)
+
             cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
             connection.commit()
+
+            for item in new_items:
+                lower_stock(connection, cursor, item)
 
 
 def viewUser(connection, cursor):
@@ -267,15 +278,24 @@ def viewUser(connection, cursor):
 
             order_input = 0
             while order_input != 1:
-                cursor.execute("SELECT orderhistory FROM users WHERE id = " + str(signed_in_id))
-                row = cursor.fetchall()
+                cursor.execute("SELECT orderid, date, time, total, payment, COUNT(*) FROM orders WHERE userid = '" + str(signed_in_id) + "' GROUP BY orderid, date, time, total, payment")
+                count = cursor.fetchall()
 
-                print("\n\n")
-                for i in row:
-                    print(i)
+                for i in range(len(count)):
+                    print("\nORDER " + str(i+1) + ": -----------------------")
+                    print("Date/time of purchase: " + str(count[i][1]) + ", at " + str(count[i][2]))
+                    print("Total price: " + str(count[i][3]))
+                    print("Payment method: " + str(count[i][4]))
+                    print("\nGames purchased:\n")
 
-                print("1: Go back")
-                order_inputTMP = input("\nPlease press 1: ")
+                    cursor.execute("SELECT games.title FROM orders INNER JOIN games ON orders.gameid=games.id WHERE orders.userid = " + str(signed_in_id) + " AND orders.orderid = " + str(i+1))
+
+                    for j in range(count[i][5]):
+                        row = cursor.fetchone()
+                        print(row[0])
+
+                print("\n\n\n1: Go back")
+                order_inputTMP = input("Please press 1: ")
                 try:
                     order_input = int(order_inputTMP)
                 except(Exception, ValueError, TypeError):
@@ -354,16 +374,21 @@ def viewUser(connection, cursor):
 
 
 def viewGames(connection, cursor, new_cart):
-    cursor.execute("SELECT title FROM games")
+    cursor.execute("SELECT title, stock FROM games")
     games = cursor.fetchall()
-    new_games = [item for t in games for item in t]
+    cursor.execute("SELECT title FROM games")
+    game_titles = cursor.fetchall()
+    new_games = [item for t in game_titles for item in t]
 
     while 1:
 
         print("\n\n1: Go back")
         count_var = 2
         for x in games:
-            print(count_var, ": ", x, sep='')
+            if x[1] <= 0:
+                print(count_var, ": ", x[0], " (OUT OF STOCK!)", sep='')
+            else:
+                print(count_var, ": ", x[0], sep='')
             count_var += 1
 
         try:
@@ -373,24 +398,51 @@ def viewGames(connection, cursor, new_cart):
                 return
 
             else:
-                print("\n\n\nFull info for " + new_games[game_input - 2])
                 game_title = str(new_games[game_input - 2])
-                cursor.execute('SELECT * FROM games WHERE games.title = (%s)', (game_title,))
-                game_data = cursor.fetchone()
-                labels = ["GameId", "Title", "Developer", "Publisher", "Genre", "Price", "ESRB", "Inventory",
-                          "User Rating",
-                          "Release Date"]
-                i = 0
-                for x in game_data:
-                    print(labels[i], ": ", x, sep='')
-                    i += 1
-                print("\n")
-                if input('Do you want to add this game to your cart? y/n: ') == ('y' or 'Y'):
-                    #print(game_data[5])
-                    new_cart.add_to_cart(game_data[0], game_data[5], cursor, connection)
+
+                cursor.execute('SELECT stock FROM games WHERE title = (%s)', (game_title,))
+                stock = cursor.fetchone()
+
+                if stock[0] > 0:
+
+                    cursor.execute('SELECT age FROM users WHERE id = (%s)', (signed_in_id,))
+                    age = cursor.fetchone()
+                    cursor.execute('SELECT esrb FROM games WHERE title = (%s)', (game_title,))
+                    esrb = cursor.fetchone()
+
+                    if esrb[0] == "E":
+                        viewGameDetails(cursor, connection, new_cart, game_title)
+                    elif esrb[0] == "E10+" and age[0] >= 10:
+                        viewGameDetails(cursor, connection, new_cart, game_title)
+                    elif esrb[0] == "T" and age[0] >= 13:
+                        viewGameDetails(cursor, connection, new_cart, game_title)
+                    elif esrb[0] == "M" and age[0] >= 18:
+                        viewGameDetails(cursor, connection, new_cart, game_title)
+                    else:
+                        print("\n\n\nYou are too young for this game!")
+
+                else:
+                    print("\nWe're sorry, but this game is currently out of stock!")
 
         except (BaseException, TypeError) as error:
             print('Please select a valid option', error)
+
+
+def viewGameDetails(cursor, connection, cart, gameTitle):
+    print("\n\n\nFull info for " + gameTitle)
+
+    cursor.execute('SELECT * FROM games WHERE title = (%s)', (gameTitle,))
+    game_data = cursor.fetchone()
+    labels = ["Game ID", "Title", "Developer", "Publisher", "Genre", "Price", "ESRB rating",
+              "Number of copies available",
+              "User reviews",
+              "Release date"]
+    i = 0
+    for x in game_data:
+        print(labels[i], ": ", x, sep='')
+        i += 1
+    if input('Do you want to add this game to your cart? y/n: ') == ('y' or 'Y'):
+        cart.add_to_cart(game_data[0], game_data[5], cursor, connection)
 
 
 def lower_stock(connection, cursor, title):

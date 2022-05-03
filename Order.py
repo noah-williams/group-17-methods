@@ -1,58 +1,50 @@
-import main
 import datetime
 from datetime import date
 from datetime import datetime
 import psycopg2
+
+
 class Order:
-    def __init__(order, UserID, OrderDate, OrderTime, TotalCost, OrderItems, PaymentInfo, cursor):
-        try:
-            order.UserID = UserID
-            order.OrderDate = OrderDate
-            order.OrderTime = OrderTime
-            order.TotalCost = TotalCost
-            order.OrderItems = OrderItems
-            order.paymentInfo = PaymentInfo
+    def __init__(order, OrderID, UserID, OrderDate, OrderTime, TotalCost, GameID, PaymentInfo, cursor, connection):
 
-            cursor.execute("SELECT orderid FROM orders")
-            ids = cursor.fetchall()
+        order.OrderID = OrderID
+        order.UserID = UserID
+        order.OrderDate = OrderDate
+        order.OrderTime = OrderTime
+        order.TotalCost = TotalCost
+        order.GameID = GameID
+        order.Payment = PaymentInfo[0]
 
-            cursor.execute(
-                'INSERT INTO orders VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                (max(ids)+1, UserID, OrderDate, OrderTime, TotalCost, OrderItems, PaymentInfo))
-            rows = cursor.fetchone()
-            print(rows)
+        cursor.execute("INSERT INTO orders VALUES (" + str(order.OrderID) + ", " + str(order.UserID) + ", '" + str(order.OrderDate) + "', '" + str(order.OrderTime) + "', " + str(order.TotalCost) + ", " +  str(order.GameID) + ", '" +  order.Payment +  "');")
+        connection.commit()
 
-        except (Exception, psycopg2.DatabaseError) as error:
-            print('Encountered error', error)
 
-    def output_name(user):
-        return user.FirstName
-
-def add_order(TotalCost, OrderItems, PaymentInfo, cursor):
-    cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
-    temp = cursor.fetchone()
-    for x in temp:
-        UserID = x
+def add_order(TotalCost, OrderItems, PaymentInfo, cursor, connection, sign_in):
     OrderDate = date.today()
-    OrderTime = datetime.now().strftime("%H :%M: %S")
-    Order(UserID, OrderDate, OrderTime, TotalCost, OrderItems, PaymentInfo, cursor)
+    OrderTime = datetime.now().strftime("%H:%M:%S")
 
-def view(cursor):
-    cursor.execute('SELECT id FROM users WHERE username = (%s)', (main.signed_in_username,))
-    temp = cursor.fetchone()
-    for x in temp:
-        UserID = x
-    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (UserID,))
+    cursor.execute("SELECT orderid FROM orders")
+    ids = cursor.fetchall()
+    new_ids = [item for t in ids for item in t]
+    if not new_ids:
+        new_ids = [0]
+
+    for i in range(len(OrderItems)):
+        Order(max(new_ids)+1, sign_in, OrderDate, OrderTime, TotalCost, OrderItems[i], PaymentInfo, cursor, connection)
+
+
+def view(cursor, sign_in):
+    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (sign_in,))
     orders = cursor.fetchall()
     count = len(orders)
-    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (UserID,))
+    cursor.execute('SELECT * FROM orders WHERE userid = (%s)', (sign_in,))
     x = 0
     labels = ["Order ID", "User ID", "Order Date", "Order Time", "Total Price", "Games", "Payment Info"]
     while x < count:
         order = cursor.fetchone()
         i = 0
         for y in order:
-            print(labels[i], ": ", x , sep='')
+            print(labels[i], ": ", x, sep='')
             i += 1
         print()
         x += 1
