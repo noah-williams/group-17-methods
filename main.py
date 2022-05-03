@@ -220,8 +220,8 @@ def viewCart(connection, cursor):
                     break
                 if 1 < int(responce) <= count_var:
                     responce = int(responce)
-                    print(better_gameids[responce])
-                    cursor.execute("DELETE FROM carts WHERE ctid IN (SELECT ctid FROM carts WHERE userid = " + str(signed_in_id) + " AND games = " + better_gameids[responce] + " LIMIT 1)")
+                    print(better_gameids[responce - 2])
+                    cursor.execute("DELETE FROM carts WHERE ctid IN (SELECT ctid FROM carts WHERE userid = " + str(signed_in_id) + " AND games = '" + str(better_gameids[responce - 2]) + "' LIMIT 1)")
                     connection.commit()
                     print("It has been removed")
 
