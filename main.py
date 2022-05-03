@@ -235,24 +235,26 @@ def viewCart(connection, cursor):
                 totalCost += price
 
             cursor.execute("SELECT games FROM carts WHERE userid = " + str(signed_in_id))
-            orderItems = cursor.fetchall()
-
-
-            new_items = [item for t in orderItems for item in t]
-            integer_items = []
-            for item in new_items:
-                integer_items.append(int(item))
+            gameids = cursor.fetchall()
+            better_gameids = [item for t in gameids for item in t]
+            new_items = []
+            for i in better_gameids:
+                    # Finds each game in the games table
+                    cursor.execute("SELECT title FROM games WHERE id = " + i +";")
+                    cart_items = cursor.fetchall()
+                    temp = [item for t in cart_items for item in t]
+                    for item in temp:
+                        new_items.append(item)
 
             cursor.execute("SELECT payment FROM users WHERE id = " + str(signed_in_id))
             paymentInfo = cursor.fetchone()
 
-            Order.add_order(totalCost, integer_items, paymentInfo, cursor, connection, signed_in_id)
-
-            cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
-            connection.commit()
-
+            Order.add_order(totalCost, better_gameids, paymentInfo, cursor, connection, signed_in_id)
+            print(new_items)
             for item in new_items:
                 lower_stock(connection, cursor, item)
+            cursor.execute("DELETE FROM carts WHERE userid = " + str(signed_in_id))
+            connection.commit()
 
 
 def viewUser(connection, cursor):
