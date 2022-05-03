@@ -12,10 +12,15 @@ class Order:
         order.OrderDate = OrderDate
         order.OrderTime = OrderTime
         order.TotalCost = TotalCost
-        order.GameID = GameID
+        order.GameID = []
+        for game in GameID:
+            order.GameID.append(game)
         order.Payment = PaymentInfo[0]
-
-        cursor.execute("INSERT INTO orders VALUES (" + str(order.OrderID) + ", " + str(order.UserID) + ", '" + str(order.OrderDate) + "', '" + str(order.OrderTime) + "', " + str(order.TotalCost) + ", " +  str(order.GameID) + ", '" +  order.Payment +  "');")
+        ids = ""
+        i = 0
+        for game in order.GameID:
+            cursor.execute("INSERT INTO orders VALUES (" + str(order.OrderID +i) + ", " + str(order.UserID) + ", '" + str(order.OrderDate) + "', '" + str(order.OrderTime) + "', " + str(order.TotalCost) + ", " +  str(game) + ", '" +  order.Payment +  "');")
+            i += 1
         connection.commit()
 
 
