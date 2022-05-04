@@ -3,12 +3,12 @@ import main
 
 
 class User:
-    def __init__(user, fname, lname, username, password, shipping, payment, age, cursor):
+    def __init__(user, id, fname, lname, username, password, shipping, payment, age, cursor):
         cursor.execute("SELECT id FROM users")
         ids = cursor.fetchall()
         new_ids = [item for t in ids for item in t]
 
-        user.ID = main.signed_in_id = max(new_ids) + 1
+        user.ID = id
         user.FirstName = fname
         user.LastName = lname
         user.Username = username

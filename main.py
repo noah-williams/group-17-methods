@@ -47,6 +47,12 @@ def login():
 
 
 def add_user(cursor):
+    cursor.execute("SELECT id FROM users")
+    ids = cursor.fetchall()
+    new_ids = [item for t in ids for item in t]
+    global signed_in_id
+    signed_in_id = max(new_ids) + 1
+
     first = input("\n\n\nWhat is your first name? ")
     last = input("What is your last name? ")
     new_username = input("What do you want your username to be? ")
@@ -61,7 +67,7 @@ def add_user(cursor):
         except(Exception, TypeError, ValueError):
             print("Please input a valid age integer")
 
-    User.User(first, last, new_username, password, shipping, payment, age, cursor)
+    User.User(signed_in_id, first, last, new_username, password, shipping, payment, age, cursor)
 
 
 def log(cursor):
@@ -242,7 +248,7 @@ def viewCart(connection, cursor):
                 except(Exception, TypeError, ValueError):
                     responce = -1
                     print("Invalid integer entry.")
-                if responce == '1':
+                if responce == 1:
                     break
                 if 1 < int(responce) <= count_var:
                     responce = int(responce)
@@ -497,7 +503,7 @@ def lower_stock(connection, cursor, title, lowerBy):
     row = cursor.fetchone()
     for x in row:
         temp = int(x)
-    print(temp)
+    #print(temp)
     stock = temp - lowerBy
     cursor.execute('UPDATE games SET stock = (%s) WHERE games.title = (%s)', (stock, title,))
     connection.commit()
@@ -505,7 +511,7 @@ def lower_stock(connection, cursor, title, lowerBy):
     row2 = cursor.fetchone()
     for y in row2:
         temp2 = int(y)
-    print(temp2)
+    #print(temp2)
 
 
 if __name__ == "__main__":
